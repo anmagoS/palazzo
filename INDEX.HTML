@@ -6,8 +6,7 @@
   <style>
     body { font-family: sans-serif; padding: 20px; }
     .producto { border: 1px solid #ccc; padding: 10px; margin: 10px; display: inline-block; width: 200px; }
-    .carrito { margin-top: 30px; }
-    .cliente-form { margin-top: 30px; }
+    .carrito, .cliente-form { margin-top: 30px; }
     button { margin-top: 10px; }
   </style>
 </head>
@@ -73,13 +72,18 @@
 
     function enviarPedido() {
       const cliente = {
-        nombre: document.getElementById('nombre').value,
-        telefono: document.getElementById('telefono').value,
-        direccion: document.getElementById('direccion').value,
-        email: document.getElementById('email').value
+        nombre: document.getElementById('nombre').value.trim(),
+        telefono: document.getElementById('telefono').value.trim(),
+        direccion: document.getElementById('direccion').value.trim(),
+        email: document.getElementById('email').value.trim()
       };
 
-      fetch('https://script.google.com/macros/s/AKfycbxWs3z70PUYVJuZre5Dav8avWIxGFxp-G3-878TeeyyTDlSbvETBDratlmZ_MA_olCSHQ/exec', {
+      if (!cliente.nombre || !cliente.telefono || carrito.length === 0) {
+        alert("Por favor completa los datos del cliente y agrega al menos un producto.");
+        return;
+      }
+
+      fetch('https://script.google.com/macros/s/AKfycbwsTUBgDGib-KseZEHY2iIpMvVAz83NDnV5ECxNr9PReDZR8hUdig2wTeDRIZWpF0NqCg/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cliente, carrito })
@@ -89,7 +93,9 @@
         alert(msg);
         carrito.length = 0;
         actualizarCarrito();
-      });
+        document.querySelectorAll('.cliente-form input').forEach(i => i.value = '');
+      })
+      .catch(err => alert("Error al enviar el pedido: " + err));
     }
 
     mostrarProductos();
@@ -97,3 +103,4 @@
 
 </body>
 </html>
+
