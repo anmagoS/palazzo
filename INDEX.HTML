@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Carrito ANMAGO - Prueba</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .producto { border: 1px solid #ccc; padding: 10px; margin: 10px; display: inline-block; width: 200px; }
+    .carrito { margin-top: 30px; }
+    .cliente-form { margin-top: 30px; }
+    button { margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>Catálogo de prueba</h1>
+  <div id="productos"></div>
+
+  <h2>🛒 Carrito</h2>
+  <ul id="carrito-lista"></ul>
+
+  <div class="cliente-form">
+    <h2>📋 Datos del cliente</h2>
+    <input type="text" id="nombre" placeholder="Nombre"><br>
+    <input type="text" id="telefono" placeholder="Teléfono"><br>
+    <input type="text" id="direccion" placeholder="Dirección"><br>
+    <input type="email" id="email" placeholder="Email"><br>
+    <button onclick="enviarPedido()">Confirmar pedido</button>
+  </div>
+
+  <script>
+    const productos = [
+      { id: 'P001', nombre: 'Blusa Floral', precio: 15000, imagen: 'https://via.placeholder.com/150' },
+      { id: 'P002', nombre: 'Jean Skinny', precio: 22000, imagen: 'https://via.placeholder.com/150' },
+      { id: 'P003', nombre: 'Chaqueta Denim', precio: 35000, imagen: 'https://via.placeholder.com/150' }
+    ];
+
+    const carrito = [];
+
+    function mostrarProductos() {
+      const contenedor = document.getElementById('productos');
+      productos.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'producto';
+        div.innerHTML = `
+          <img src="${p.imagen}" width="150"><br>
+          <strong>${p.nombre}</strong><br>
+          Precio: $${p.precio}<br>
+          Cantidad: <input type="number" id="cant-${p.id}" value="1" min="1"><br>
+          <button onclick="agregarAlCarrito('${p.id}')">Agregar al carrito</button>
+        `;
+        contenedor.appendChild(div);
+      });
+    }
+
+    function agregarAlCarrito(id) {
+      const producto = productos.find(p => p.id === id);
+      const cantidad = parseInt(document.getElementById(`cant-${id}`).value);
+      carrito.push({ idProducto: producto.id, cantidad, precio: producto.precio });
+      actualizarCarrito();
+    }
+
+    function actualizarCarrito() {
+      const lista = document.getElementById('carrito-lista');
+      lista.innerHTML = '';
+      carrito.forEach((item, i) => {
+        const producto = productos.find(p => p.id === item.idProducto);
+        const li = document.createElement('li');
+        li.textContent = `${producto.nombre} x${item.cantidad} - $${item.precio * item.cantidad}`;
+        lista.appendChild(li);
+      });
+    }
+
+    function enviarPedido() {
+      const cliente = {
+        nombre: document.getElementById('nombre').value,
+        telefono: document.getElementById('telefono').value,
+        direccion: document.getElementById('direccion').value,
+        email: document.getElementById('email').value
+      };
+
+      fetch('TU_URL_DEL_WEBAPP', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ cliente, carrito })
+      })
+      .then(res => res.text())
+      .then(msg => {
+        alert(msg);
+        carrito.length = 0;
+        actualizarCarrito();
+      });
+    }
+
+    mostrarProductos();
+  </script>
+
+</body>
+</html>
