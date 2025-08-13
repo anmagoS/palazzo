@@ -79,7 +79,7 @@
         email: document.getElementById('email').value
       };
 
-      fetch('TU_URL_DEL_WEBAPP', {
+      fetch('https://script.google.com/macros/s/AKfycbwsTUBgDGib-KseZEHY2iIpMvVAz83NDnV5ECxNr9PReDZR8hUdig2wTeDRIZWpF0NqCg/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cliente, carrito })
