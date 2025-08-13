@@ -63,7 +63,7 @@
       const lista = document.getElementById('carrito-lista');
       lista.innerHTML = '';
       carrito.forEach(item => {
-        const producto = productos.find(p => p.id === item.idProducto);
+        const producto = productos.find(p => p.idProducto === item.idProducto);
         const li = document.createElement('li');
         li.textContent = `${producto.nombre} x${item.cantidad} - $${item.precio * item.cantidad}`;
         lista.appendChild(li);
@@ -88,12 +88,16 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cliente, carrito })
       })
-      .then(res => res.text())
+      .then(res => res.json())
       .then(msg => {
-        alert(msg);
-        carrito.length = 0;
-        actualizarCarrito();
-        document.querySelectorAll('.cliente-form input').forEach(i => i.value = '');
+        if (msg.status === "ok") {
+          alert(msg.mensaje);
+          carrito.length = 0;
+          actualizarCarrito();
+          document.querySelectorAll('.cliente-form input').forEach(i => i.value = '');
+        } else {
+          alert("Error en la respuesta del WebApp.");
+        }
       })
       .catch(err => alert("Error al enviar el pedido: " + err));
     }
@@ -103,4 +107,5 @@
 
 </body>
 </html>
+
 
