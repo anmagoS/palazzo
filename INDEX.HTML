@@ -62,7 +62,7 @@
     function actualizarCarrito() {
       const lista = document.getElementById('carrito-lista');
       lista.innerHTML = '';
-      carrito.forEach((item, i) => {
+      carrito.forEach(item => {
         const producto = productos.find(p => p.id === item.idProducto);
         const li = document.createElement('li');
         li.textContent = `${producto.nombre} x${item.cantidad} - $${item.precio * item.cantidad}`;
